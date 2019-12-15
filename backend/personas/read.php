@@ -12,12 +12,12 @@ $sql .= " FROM PERSONAS";
 
 //echo "sql: $sql";
 
-$result = mysqli_query($con, $sql) or die(mysql_error());
+$resultset = mysqli_query($con, $sql) or die(mysql_error());
 
-if($result)
+if($resultset)
 {
   $i = 0;
-  while($row = mysqli_fetch_assoc($result))
+  while($row = mysqli_fetch_assoc($resultset))
   {
     $personas[$i]['codigopersona']    = $row['codigopersona'];
     $personas[$i]['primernombre'] = $row['primernombre'];

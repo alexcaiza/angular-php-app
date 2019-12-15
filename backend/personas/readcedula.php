@@ -18,10 +18,10 @@ $sql = "SELECT codigopersona, primernombre, segundonombre, primerapellido, segun
 //echo "<br> cedula: $cedula";
 //echo "<br> sql: $sql";
 
-if($result = mysqli_query($con, $sql))
+if($resultset = mysqli_query($con, $sql))
 {
   $i = 0;
-  while($row = mysqli_fetch_assoc($result))
+  while($row = mysqli_fetch_assoc($resultset))
   {
     $personas[$i]['codigopersona']    = $row['codigopersona'];
     $personas[$i]['primernombre'] = $row['primernombre'];

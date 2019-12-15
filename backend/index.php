@@ -6,17 +6,14 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 
 $localhost = "127.0.0.1"; 
 $username = "root"; 
-$password = "jb395566"; 
-$dbname = "mydb";
+$password = ""; 
+$dbname = "coop";
 
 
 // get the HTTP method, path and body of the request
 $method = $_SERVER['REQUEST_METHOD'];
 $request = explode('/', trim($_SERVER['PATH_INFO'],'/'));
 $input = json_decode(file_get_contents('php://input'),true);
-
-
-
 
 // create connection to mysql
 $conn = new mysqli($localhost, $username, $password, $dbname); 
@@ -49,11 +46,11 @@ switch ($method) {
 
 
 // run SQL statement
-$result = mysqli_query($conn,$sql);
+$resultset = mysqli_query($conn,$sql);
 
   
 // die if SQL statement failed
-if (!$result) {
+if (!$resultset) {
   http_response_code(404);
   die(mysqli_error($conn));
 }
@@ -61,8 +58,8 @@ if (!$result) {
 // print results, insert id or affected row count
 if ($method == 'GET') {
   if (!$id) echo '[';
-  for ($i=0;$i<mysqli_num_rows($result);$i++) {
-    echo ($i>0?',':'').json_encode(mysqli_fetch_object($result));
+  for ($i=0;$i<mysqli_num_rows($resultset);$i++) {
+    echo ($i>0?',':'').json_encode(mysqli_fetch_object($resultset));
   }
   if (!$id) echo ']';
 } elseif ($method == 'POST') {

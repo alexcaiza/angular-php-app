@@ -1,41 +1,46 @@
 <?php
-require 'database.php';
+require '../database.php';
+require 'depositosfunciones.php';
 
 // Get the posted data.
 $postdata = file_get_contents("php://input");
+
+$response = [];
 
 if(isset($postdata) && !empty($postdata))
 {
   // Extract the data.
   $request = json_decode($postdata);
-	
-
+  $response_code = null;
+  
   // Validate.
-  if(trim($request->name) === '' || (float)$request->price < 0)
-  {
-    return http_response_code(400);
+  if(!createVALIDATION($con, $request)) {
+	$response['mensaje'] = "Existen campos vacios para registrar el deposito";
+	$response_code = 400;    
   }
-	
-  // Sanitize.
-  $name = mysqli_real_escape_string($con, trim($request->name));
-  $price = mysqli_real_escape_string($con, (float)$request->price);
-    
+  else {
+      $depositoSearch = buscarDepositoByNumeroDocumento($con, $request);
+      if ($depositoSearch != null) {
+          $response['status'] = 0;
+          $response['mensaje'] = "El deposito con el numero ".sanitize($con, trim($request->numerodeposito))." ya esta registrado";
+          $response_code = 400;
+      }
+      else {
+          $response = createDEPOSITO($con, $request);
+          
+          if($response != null && $response['status'] == 1) {
+              $response_code = 201;
+          }
+          else {
+              $response_code = 422;
+          }
+      }   
+  }
 
-  // Store.
-  $sql = "INSERT INTO `games`(`id`,`name`,`price`) VALUES (null,'{$name}','{$price}')";
+  $response['$response_code'] = $response_code;
+  
+  echo json_encode($response);
 
-  if(mysqli_query($con,$sql))
-  {
-    http_response_code(201);
-    $game = [
-      'name' => $name,
-      'price' => $price,
-      'id'    => mysqli_insert_id($con)
-    ];
-    echo json_encode($game);
-  }
-  else
-  {
-    http_response_code(422);
-  }
+  //return http_response_code($response_code);
+
 }

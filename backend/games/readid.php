@@ -14,10 +14,10 @@ if(!$id)
 $game = null;
 $sql = "SELECT id, name, price FROM games WHERE `id` ='{$id}'";
 
-if($result = mysqli_query($con, $sql))
+if($resultset = mysqli_query($con, $sql))
 {
   $i = 0;
-  while($row = mysqli_fetch_assoc($result))
+  while($row = mysqli_fetch_assoc($resultset))
   {
     $games[$i]['id']    = $row['id'];
     $games[$i]['name'] = $row['name'];

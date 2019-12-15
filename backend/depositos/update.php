@@ -25,13 +25,13 @@ try {
 	  // Update.
 	  $sql = "UPDATE `games` SET `name`='$name',`price`='$price' WHERE `id` = '{$id}' LIMIT 1";
 	  
-	  $result = mysqli_query($con, $sql);
+	  $resultset = mysqli_query($con, $sql);
 	  
-	  if($result === false) {
+	  if($resultset === false) {
 			throw new Exception(mysql_error($con));
 	  }
 
-	  if($result) {
+	  if($resultset) {
 		//http_response_code(204);
 		echo json_encode($request);
 	  }

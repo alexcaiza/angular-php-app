@@ -7,10 +7,10 @@ require 'database.php';
 $policies = [];
 $sql = "SELECT id, number, amount FROM policies";
 
-if($result = mysqli_query($con,$sql))
+if($resultset = mysqli_query($con,$sql))
 {
   $i = 0;
-  while($row = mysqli_fetch_assoc($result))
+  while($row = mysqli_fetch_assoc($resultset))
   {
     $policies[$i]['id']    = $row['id'];
     $policies[$i]['number'] = $row['number'];
