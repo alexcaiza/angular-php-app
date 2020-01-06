@@ -1,6 +1,6 @@
 <?php
 require '../database.php';
-require 'cuotasfunciones.php';
+require 'cuotas_funciones.php';
 
 // Get the posted data.
 $postdata = file_get_contents("php://input");

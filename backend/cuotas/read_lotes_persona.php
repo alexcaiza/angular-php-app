@@ -3,7 +3,7 @@
  * Returns the list of cuotas.
  */
 require '../database.php';
-require 'cuotasfunciones.php';
+require 'cuotas_funciones.php';
 
 $response = [];
 $lotes = [];
@@ -14,8 +14,8 @@ $codigopersona = ($_GET['codigopersona'] !== null && $_GET['codigopersona'] != "
 
 $response['codigopersona'] = $codigopersona;
 
-$orderby = " ORDER BY codigoreferencia";
-$where = " WHERE codigopersona = '${codigopersona}'";
+$orderby = " ORDER BY L.codigoreferencia";
+$where = " WHERE L.codigopersona = '${codigopersona}'";
 
 if(!$codigopersona)
 {

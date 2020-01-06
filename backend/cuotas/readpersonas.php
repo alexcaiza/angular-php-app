@@ -3,7 +3,7 @@
  * Returns the list of cuotas.
  */
 require '../database.php';
-require 'cuotasfunciones.php';
+require 'cuotas_funciones.php';
     
 $personas = [];
 
