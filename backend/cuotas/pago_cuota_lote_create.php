@@ -11,7 +11,7 @@ try {
     if(isset($postdata) && !empty($postdata))
     {
         // Extract the data.
-         $request = json_decode($postdata);
+        $request = json_decode($postdata);
         $response_code = null;
       
         // Validate.

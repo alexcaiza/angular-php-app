@@ -31,7 +31,38 @@ function sqlCuotasLotes($codigocuota) {
     $sql .= "   T1.codigolote, T1.codigoreferencia, T1.descripcioncuota, T1.codigocuota, T1.valorcuota, ";
     $sql .= "   S.codigopersona, S.cedula, S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre ";
     $sql .= " ORDER BY";
-    $sql .= "   S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre, T1.codigoreferencia";
+    $sql .= "   S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre, T1.codigoreferencia, T1.descripcioncuota";
+    return $sql;
+}
+
+/**
+ * Returns the list of cuotas de cada uno de los lotes.
+ */
+function sqlCuotasLotes2($params) {
+    $sql = "";
+    $sql .= " SELECT ";
+    $sql .= "   T1.codigolote, T1.codigoreferencia, T1.descripcioncuota, T1.codigocuota, T1.valorcuota, ";
+    $sql .= "   S.codigopersona, S.cedula, S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre, ";
+    $sql .= "   sum(P.valorpagocuotalote) as valorpagocuotalote ";
+    $sql .= " FROM";
+    $sql .= "   (select L.codigolote, L.codigoreferencia, L.codigopersona, C.descripcioncuota, C.codigocuota, C.valorcuota from LOTES L, cuotas C ) AS T1";
+    $sql .= "   LEFT JOIN pagocuotalote P ON P.codigocuota = T1.codigocuota and P.codigolote = T1.codigolote";
+    $sql .= "   LEFT JOIN personas S ON S.codigopersona = T1.codigopersona";
+    $sql .= " WHERE 1=1";
+    if (isset($params->codigocuota) && $params->codigocuota) {
+        $sql .= " AND T1.CODIGOCUOTA = '{$params->codigocuota}'";
+    }
+    if (isset($params->codigolote) && $params->codigolote) {
+        $sql .= " AND T1.CODIGOLOTE = '{$params->codigolote}'";
+    }
+    if (isset($params->codigopersona) && $params->codigopersona) {
+        $sql .= " AND S.CODIGOPERSONA = '{$params->codigopersona}'";
+    }
+    $sql .= " GROUP BY";
+    $sql .= "   T1.codigolote, T1.codigoreferencia, T1.descripcioncuota, T1.codigocuota, T1.valorcuota, ";
+    $sql .= "   S.codigopersona, S.cedula, S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre ";
+    $sql .= " ORDER BY";
+    $sql .= "   S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre, T1.codigoreferencia, T1.descripcioncuota";
     return $sql;
 }
 
