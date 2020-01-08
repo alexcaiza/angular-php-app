@@ -6,7 +6,7 @@
 function sqlCuotas($where, $orderby) {
   $sql = "";
   $sql .= " SELECT ";
-  $sql .= "   CUO.codigocuota, CUO.descripcioncuota, CUO.valorcuota, CUO.fechainicio, CUO.fechafin ";
+  $sql .= "   CUO.codigocuota, CUO.descripcioncuota, CUO.valorcuota, CUO.fechainicio, CUO.fechafin, CUO.ordencuota ";
   $sql .= " FROM cuotas CUO";
   $sql .= $where;
   $sql .= $orderby;
@@ -19,19 +19,19 @@ function sqlCuotas($where, $orderby) {
 function sqlCuotasLotes($codigocuota) {
     $sql = "";
     $sql .= " SELECT ";
-    $sql .= "   T1.codigolote, T1.codigoreferencia, T1.descripcioncuota, T1.codigocuota, T1.valorcuota, ";
+    $sql .= "   T1.codigolote, T1.codigoreferencia, T1.descripcioncuota, T1.codigocuota, T1.valorcuota, T1.ordencuota, ";
     $sql .= "   S.codigopersona, S.cedula, S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre, ";
     $sql .= "   sum(P.valorpagocuotalote) as valorpagocuotalote ";
     $sql .= " FROM";
-    $sql .= "   (select L.codigolote, L.codigoreferencia, L.codigopersona, C.descripcioncuota, C.codigocuota, C.valorcuota from LOTES L, cuotas C ) AS T1";
+    $sql .= "   (select L.codigolote, L.codigoreferencia, L.codigopersona, C.descripcioncuota, C.codigocuota, C.valorcuota, C.ordencuota from LOTES L, cuotas C ) AS T1";
     $sql .= "   LEFT JOIN pagocuotalote P ON P.codigocuota = T1.codigocuota and P.codigolote = T1.codigolote";
     $sql .= "   LEFT JOIN personas S ON S.codigopersona = T1.codigopersona";
     $sql .= " WHERE T1.CODIGOCUOTA = '${codigocuota}'";
     $sql .= " GROUP BY";
-    $sql .= "   T1.codigolote, T1.codigoreferencia, T1.descripcioncuota, T1.codigocuota, T1.valorcuota, ";
+    $sql .= "   T1.codigolote, T1.codigoreferencia, T1.descripcioncuota, T1.codigocuota, T1.valorcuota, T1.ordencuota, ";
     $sql .= "   S.codigopersona, S.cedula, S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre ";
     $sql .= " ORDER BY";
-    $sql .= "   S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre, T1.codigoreferencia, T1.descripcioncuota";
+    $sql .= "   S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre, T1.codigoreferencia, T1.ordencuota";
     return $sql;
 }
 
@@ -41,11 +41,11 @@ function sqlCuotasLotes($codigocuota) {
 function sqlCuotasLotes2($params) {
     $sql = "";
     $sql .= " SELECT ";
-    $sql .= "   T1.codigolote, T1.codigoreferencia, T1.descripcioncuota, T1.codigocuota, T1.valorcuota, ";
+    $sql .= "   T1.codigolote, T1.codigoreferencia, T1.descripcioncuota, T1.codigocuota, T1.valorcuota, T1.ordencuota, ";
     $sql .= "   S.codigopersona, S.cedula, S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre, ";
     $sql .= "   sum(P.valorpagocuotalote) as valorpagocuotalote ";
     $sql .= " FROM";
-    $sql .= "   (select L.codigolote, L.codigoreferencia, L.codigopersona, C.descripcioncuota, C.codigocuota, C.valorcuota from LOTES L, cuotas C ) AS T1";
+    $sql .= "   (select L.codigolote, L.codigoreferencia, L.codigopersona, C.descripcioncuota, C.codigocuota, C.valorcuota, C.ordencuota from LOTES L, cuotas C ) AS T1";
     $sql .= "   LEFT JOIN pagocuotalote P ON P.codigocuota = T1.codigocuota and P.codigolote = T1.codigolote";
     $sql .= "   LEFT JOIN personas S ON S.codigopersona = T1.codigopersona";
     $sql .= " WHERE 1=1";
@@ -58,11 +58,19 @@ function sqlCuotasLotes2($params) {
     if (isset($params->codigopersona) && $params->codigopersona) {
         $sql .= " AND S.CODIGOPERSONA = '{$params->codigopersona}'";
     }
+    if (isset($params->apellidosocio) && $params->apellidosocio) {
+        $params->apellidosocio = strtoupper($params->apellidosocio);
+        $sql .= " AND S.PRIMERAPELLIDO LIKE '%{$params->apellidosocio}%'";
+    }
+    if (isset($params->nombresocio) && $params->nombresocio) {
+        $params->nombresocio = strtoupper($params->nombresocio);
+        $sql .= " AND S.PRIMERNOMBRE LIKE '%{$params->nombresocio}%'";
+    }
     $sql .= " GROUP BY";
-    $sql .= "   T1.codigolote, T1.codigoreferencia, T1.descripcioncuota, T1.codigocuota, T1.valorcuota, ";
+    $sql .= "   T1.codigolote, T1.codigoreferencia, T1.descripcioncuota, T1.codigocuota, T1.valorcuota, T1.ordencuota, ";
     $sql .= "   S.codigopersona, S.cedula, S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre ";
     $sql .= " ORDER BY";
-    $sql .= "   S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre, T1.codigoreferencia, T1.descripcioncuota";
+    $sql .= "   S.primerapellido, S.segundoapellido, S.primernombre, S.segundonombre, T1.codigoreferencia, T1.ordencuota";
     return $sql;
 }
 
@@ -73,7 +81,7 @@ function sqlPersonas($where, $orderby) {
   $sql = "";
   $sql .= " SELECT ";
   $sql .= "   codigopersona, primernombre, segundonombre, primerapellido, segundoapellido, cedula ";
-  $sql .= " FROM PERSONAS";
+  $sql .= " FROM PERSONAS P";
   $sql .= $where;
   $sql .= $orderby;
   return $sql;

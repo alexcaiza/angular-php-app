@@ -4,12 +4,19 @@
  */
 require '../database.php';
 require 'cuotas_funciones.php';
-    
+
 $personas = [];
 
 $where = "";
 $orderby = "";
 
+$textSearch = ($_GET['textSearch'] !== null && $_GET['textSearch'] != "")? mysqli_real_escape_string($con, (string) $_GET['textSearch']) : false;
+
+if($textSearch)
+{
+    $where = " WHERE P.CEDULA LIKE '%{$textSearch}%'";
+}
+    
 $sql = sqlPersonas($where, $orderby);
 
 //echo "$sql";
