@@ -14,8 +14,6 @@ $response['status'] = 0;
 // Get the posted data.
 $postdata = file_get_contents("php://input");
 
-$response = [];
-
 try {
     if(isset($postdata) && !empty($postdata))
     {
