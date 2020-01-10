@@ -15,7 +15,7 @@ function sqlDEPOSITOS($where, $orderby) {
   return $sql;
 }
 
-function buscarDepositoByNumeroDocumento($con, $request){
+function buscarDepositoByNumeroDocumento($con, $request) {
     
     $numerodeposito = sanitize($con, trim($request->numerodeposito));
     
@@ -110,3 +110,43 @@ function createDEPOSITO($con, $request) {
   return $response;
 }
 
+/**
+ * Metodo para registrar datos en la tabla depositospersonas
+ * 
+ */
+function createDepositoPersona($con, $codigodeposito, $codigopersona) {
+    // Sanitize.
+    $codigodeposito = mysqli_real_escape_string($con, trim($codigodeposito));
+    $codigopersona = mysqli_real_escape_string($con, trim($codigopersona));
+    
+    // Store table depositospersonas.
+    $sql = "";
+    $sql .= " INSERT INTO `depositospersonas`(`codigodeposito`,`codigopersona`,`estado`) ";
+    $sql .= " VALUES ('{$codigodeposito}','{$codigopersona}','1')";
+    
+    //echo "sql: $sql";
+    $response = [];
+    $response['status'] = 0;
+    
+    $response['sql'] = $sql;
+    
+    $resulset = mysqli_query($con, $sql);
+    
+    if (mysql_errno()) {
+        $response['mysql_errno'] = mysql_errno($con);
+        $response['mysql_error'] = mysql_error($con);
+        $response['status'] = 0;
+    }
+    else {
+        if($resulset) {
+            $depositopersona = [
+                'codigodeposito' => $codigodeposito,
+                'codigopersona' => $codigopersona
+            ];
+            
+            $response['depositopersona'] = $depositopersona;
+            $response['status'] = 1;
+        }
+    }
+    return $response;
+}

@@ -110,6 +110,7 @@ function sqlDepositosByPersona($where, $orderby) {
   $sql .= "   D.codigopersona, D.codigodeposito, D.numerodeposito, D.valordeposito, D.fechadeposito, ";
   $sql .= "   (select SUM(P.valorpagocuotalote) from pagocuotalote P where P.codigodeposito = D.codigodeposito) as valorutilizado ";
   $sql .= " FROM DEPOSITOS D ";
+  $sql .= " INNER JOIN DEPOSITOSPERSONAS DP ON DP.codigodeposito = D.codigodeposito ";
   $sql .= $where;
   $sql .= $orderby;
   return $sql;

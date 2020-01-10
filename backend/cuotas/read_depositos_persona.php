@@ -14,14 +14,14 @@ $codigopersona = ($_GET['codigopersona'] !== null && $_GET['codigopersona'] != "
 
 $response['codigopersona'] = $codigopersona;
 
-$orderby = " ORDER BY fechadeposito, numerodeposito, valordeposito";
-$where = " WHERE codigopersona = '${codigopersona}' AND numerodeposito <> '' ";
+$orderby = " ORDER BY D.fechadeposito, D.numerodeposito, D.valordeposito";
+$where = " WHERE DP.codigopersona = '${codigopersona}' AND D.numerodeposito <> '' ";
 
 if(!$codigopersona)
 {
   //echo json_encode($response);
   //return http_response_code(400);
-  $where = " WHERE numerodeposito <> ''";
+  $where = " WHERE D.numerodeposito <> ''";
 }
 
 $sql = sqlDepositosByPersona($where, $orderby);
@@ -35,6 +35,9 @@ if($resultset)
   $i = 0;
   while($row = mysqli_fetch_assoc($resultset))
   {
+      if (empty($row['valorutilizado'])) {
+          $row['valorutilizado'] = 0;
+      }
       $depositos[$i] = $row;
       $i++;   
   }

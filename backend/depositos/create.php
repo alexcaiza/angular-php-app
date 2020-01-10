@@ -29,6 +29,22 @@ if(isset($postdata) && !empty($postdata))
           $response = createDEPOSITO($con, $request);
           
           if($response != null && $response['status'] == 1) {
+              
+              $depositoSave = $response['deposito'];
+              
+              if (isset($depositoSave) && isset($request->socios)) {
+                  if ($depositoSave['codigodeposito'] != null) {
+                      for ($i=0; $i < count($request->socios); $i++) {
+                          $socio = $request->socios[$i];
+                          if (isset($socio)) {
+                              $codigodeposito = $depositoSave['codigodeposito'];
+                              $codigopersona = $socio->codigopersona;
+                              createDepositoPersona($con, $codigodeposito, $codigopersona);
+                          }
+                      }
+                  }
+              }
+              
               $response_code = 201;
           }
           else {
