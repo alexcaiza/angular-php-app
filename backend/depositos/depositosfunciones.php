@@ -9,7 +9,8 @@ function sqlDEPOSITOS($where, $orderby) {
   $sql .= " SELECT ";
   $sql .= "   DEP.codigodeposito, DEP.numerodeposito, DEP.codigopersona, DEP.fechadeposito, DEP.valordeposito, DEP.tipodeposito, ";
   $sql .= "   PER.cedula, PER.primernombre, PER.segundonombre, PER.primerapellido, PER.segundoapellido ";
-  $sql .= " FROM DEPOSITOS DEP INNER JOIN PERSONAS PER ON PER.CODIGOPERSONA = DEP.CODIGOPERSONA ";
+  $sql .= " FROM DEPOSITOS DEP ";
+  $sql .= " INNER JOIN PERSONAS PER ON PER.CODIGOPERSONA = DEP.CODIGOPERSONA ";
   $sql .= $where;
   $sql .= $orderby;
   return $sql;

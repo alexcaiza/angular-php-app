@@ -27,6 +27,10 @@ try {
     $where = " WHERE 1=1 ";
     
     if (isset($params)) {
+        if (isset($params->primernombre) && $params->primernombre) {
+            $where .= " AND P.PRIMERNOMBRE LIKE '%{$params->primernombre}%'";
+        }
+        
         if (isset($params->primerapellido) && $params->primerapellido) {
             $where .= " AND P.PRIMERAPELLIDO LIKE '%{$params->primerapellido}%'";
         }

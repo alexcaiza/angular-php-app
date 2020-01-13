@@ -8,7 +8,13 @@ require 'cuotas_funciones.php';
 $cuotas = [];
 
 $where = "";
-$orderby = "";
+$orderby = " ORDER BY CUO.descripcioncuota";
+
+$textSearch = ($_GET['textSearch'] !== null && $_GET['textSearch'] != "") ? mysqli_real_escape_string($con, (string) $_GET['textSearch']) : false;
+
+if(isset($textSearch) && !empty($textSearch) && $textSearch != "undefined") {
+    $where = " WHERE CUO.descripcioncuota LIKE '%{$textSearch}%'";
+}
 
 $sql = sqlCuotas($where, $orderby);
 

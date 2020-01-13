@@ -80,8 +80,10 @@ function sqlCuotasLotes2($params) {
 function sqlPersonas($where, $orderby) {
   $sql = "";
   $sql .= " SELECT ";
-  $sql .= "   codigopersona, primernombre, segundonombre, primerapellido, segundoapellido, cedula ";
-  $sql .= " FROM PERSONAS P";
+  $sql .= "   P.codigopersona, P.primernombre, P.segundonombre, P.primerapellido, P.segundoapellido, P.cedula, ";
+  $sql .= "   L.codigoreferencia, L.manzana, L.numerolote ";
+  $sql .= " FROM PERSONAS P ";
+  $sql .= " LEFT JOIN LOTES L ON L.codigopersona = P.codigopersona ";
   $sql .= $where;
   $sql .= $orderby;
   return $sql;
