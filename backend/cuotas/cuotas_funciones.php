@@ -81,7 +81,8 @@ function sqlPersonas($where, $orderby) {
   $sql = "";
   $sql .= " SELECT ";
   $sql .= "   P.codigopersona, P.primernombre, P.segundonombre, P.primerapellido, P.segundoapellido, P.cedula, ";
-  $sql .= "   L.codigoreferencia, L.manzana, L.numerolote ";
+  $sql .= "   L.codigoreferencia, L.manzana, L.numerolote, ";
+  $sql .= "   L.codigoreferenciaanterior, L.manzanaanterior, L.numeroloteanterior ";
   $sql .= " FROM PERSONAS P ";
   $sql .= " LEFT JOIN LOTES L ON L.codigopersona = P.codigopersona ";
   $sql .= $where;

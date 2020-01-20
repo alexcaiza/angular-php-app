@@ -50,7 +50,7 @@ try {
                 }
                 
                 if ($i <= 0) {
-                    $response['mensaje'] = "No existe datos con los datos de busqueda";
+                    $response['mensaje'] = "No existe registros con los datos de busqueda";
                 }
                 
                 $response['data'] = $cuotas;
