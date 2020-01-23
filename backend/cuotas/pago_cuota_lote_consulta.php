@@ -6,21 +6,33 @@ require '../database.php';
 require 'cuotas_funciones.php';
 
 $response = [];
-$depositos = [];
 
 $response['status'] = 0;
 
 $codigolote = ($_GET['codigolote'] !== null && $_GET['codigolote'] != "") ? mysqli_real_escape_string($con, (int)$_GET['codigolote']) : false;
 $codigocuota = ($_GET['codigocuota'] !== null && $_GET['codigocuota'] != "") ? mysqli_real_escape_string($con, (int)$_GET['codigocuota']) : false;
+$codigoreunion = ($_GET['codigoreunion'] !== null && $_GET['codigoreunion'] != "") ? mysqli_real_escape_string($con, (int)$_GET['codigoreunion']) : false;
 
 $response['codigolote'] = $codigolote;
 $response['codigocuota'] = $codigocuota;
+$response['codigoreunion'] = $codigoreunion;
 
-$where = " WHERE codigolote = '${codigolote}' AND codigocuota = '${codigocuota}' ";
+$where = " WHERE 1=1";
+
+if ($codigolote) {
+    $where .= " AND codigolote = '${codigolote}' ";
+}
+
+if ($codigoreunion) {
+    $where .= " AND codigoreunion = '${codigoreunion}' ";
+}
+
 $orderby = "";
 
-if(!$codigolote || !$codigocuota)
+if(!$codigolote || (!$codigocuota && !$codigoreunion))
 {
+    $response['mensaje'] = "El codigo de la cuota o el codigo de la reunion estan vacios";
+    echo json_encode($response);
     return http_response_code(400);
 }
 
@@ -46,7 +58,7 @@ else {
         if ($data) {
             $response['data'] = $data;
         } else {
-            $response['mensaje'] = "No existe pagos de la cuota";
+            $response['mensaje'] = "No existe pagos de la cuota/reuniones";
         }
         
         echo json_encode($response);

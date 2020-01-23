@@ -67,7 +67,10 @@ function sqlReunionesLotes($params) {
     $sql .= "   T.*, a.valorasistencia ";
     $sql .= " FROM";
     $sql .= " (";
-    $sql .= "   SELECT r.codigoreunion, r.nombrereunion, r.fecharegistro, r.ordenreunion, l.codigolote, l.codigoreferencia, l.codigoreferenciaanterior, p.codigopersona, p.primernombre, p.primerapellido, p.cedula";
+    $sql .= "   SELECT ";
+    $sql .= "     r.codigoreunion, r.nombrereunion, r.fecharegistro, r.ordenreunion, r.valormulta, sumar_pagos(l.codigolote, r.codigoreunion, 'REU') as valorpagadoreunion, ";
+    $sql .= "     l.codigolote, l.codigoreferencia, l.codigoreferenciaanterior, ";
+    $sql .= "     p.codigopersona, p.primernombre, p.primerapellido, p.cedula";
     $sql .= "   FROM reuniones r";
     $sql .= "   INNER JOIN lotes l";
     $sql .= "   INNER JOIN personas p on p.codigopersona = l.codigopersona";
