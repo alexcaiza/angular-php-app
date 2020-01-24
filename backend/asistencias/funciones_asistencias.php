@@ -16,12 +16,15 @@ function sqlReuniones($where, $orderby) {
 function sqlReporteReunionesSociosAusentes($where, $orderby) {
     $sql = "";
     $sql .= " select";
-    $sql .= "   t2.codigoreunion, t2.nombrereunion, t2.valormulta, t2.ordenreunion, t2.codigolote, t2.codigopersona, t2.codigoreferencia, t2.codigoreferenciaanterior,";
+    $sql .= "   t2.*, ";
     $sql .= "   p2.primerapellido, p2.primernombre, p2.cedula, ";
     $sql .= "   a2.valorasistencia";
     $sql .= " from";
     $sql .= " (";
-    $sql .= "   select r2.codigoreunion, r2.nombrereunion, r2.valormulta, r2.ordenreunion, l2.codigolote, l2.codigopersona, l2.codigoreferencia, l2.codigoreferenciaanterior";
+    $sql .= "   select ";
+    $sql .= "   r2.codigoreunion, r2.nombrereunion, r2.valormulta, r2.ordenreunion, ";
+    $sql .= "   l2.codigolote, l2.codigopersona, l2.codigoreferencia, l2.codigoreferenciaanterior, ";
+    $sql .= "   sumar_pagos(l2.codigolote, r2.codigoreunion, 'REU') as valorpagadoreunion ";
     $sql .= "   from reuniones r2 inner join lotes l2";
     $sql .= "   where r2.estado = '1'";
     $sql .= " ) as t2";
@@ -38,11 +41,14 @@ function sqlReporteReunionesSociosAusentesTotalizado($where, $orderby) {
     $sql = "";
     $sql .= " select";
     $sql .= "   SUM(t2.valormulta) as valormulta, ";
-    $sql .= "   t2.codigolote, t2.codigopersona, t2.codigoreferencia, t2.codigoreferenciaanterior,";
+    $sql .= "   t2.codigolote, t2.codigopersona, t2.codigoreferencia, t2.codigoreferenciaanterior, t2.valorpagadoreunion, ";
     $sql .= "   p2.primerapellido, p2.primernombre, p2.cedula ";
     $sql .= " from";
     $sql .= " (";
-    $sql .= "   select r2.codigoreunion, r2.nombrereunion, r2.valormulta, r2.ordenreunion, l2.codigolote, l2.codigopersona, l2.codigoreferencia, l2.codigoreferenciaanterior";
+    $sql .= "   select ";
+    $sql .= "   r2.codigoreunion, r2.nombrereunion, r2.valormulta, r2.ordenreunion, ";
+    $sql .= "   l2.codigolote, l2.codigopersona, l2.codigoreferencia, l2.codigoreferenciaanterior, ";
+    $sql .= "   sumar_pagos_lote(l2.codigolote, 'REU') as valorpagadoreunion ";
     $sql .= "   from reuniones r2 inner join lotes l2";
     $sql .= "   where r2.estado = '1'";
     $sql .= " ) as t2";
@@ -52,14 +58,14 @@ function sqlReporteReunionesSociosAusentesTotalizado($where, $orderby) {
     $sql .= " ";
     $sql .= $where;
     $sql .= " GROUP BY";
-    $sql .= "   t2.codigolote, t2.codigopersona, t2.codigoreferencia, t2.codigoreferenciaanterior,";
+    $sql .= "   t2.codigolote, t2.codigopersona, t2.codigoreferencia, t2.codigoreferenciaanterior, t2.valorpagadoreunion, ";
     $sql .= "   p2.primerapellido, p2.primernombre, p2.cedula ";
     $sql .= $orderby;
     return $sql;
 }
 
 /**
- * Returns the list of cuotas de cada uno de los lotes.
+ * Returns the list of reuniones con cada uno de los lotes.
  */
 function sqlReunionesLotes($params) {
     $sql = "";
@@ -74,6 +80,7 @@ function sqlReunionesLotes($params) {
     $sql .= "   FROM reuniones r";
     $sql .= "   INNER JOIN lotes l";
     $sql .= "   INNER JOIN personas p on p.codigopersona = l.codigopersona";
+    $sql .= "   WHERE r.estado = '1' ";
     $sql .= " ) AS T" ;
     $sql .= " LEFT JOIN asistencias a on a.codigoreunion = t.codigoreunion and a.codigolote = t.codigolote and a.codigopersona = t.codigopersona" ;
     $sql .= " WHERE 1=1";
