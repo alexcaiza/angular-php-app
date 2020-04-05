@@ -9,9 +9,20 @@ $response = [];
 
 $response['status'] = 0;
 
-$codigolote = ($_GET['codigolote'] !== null && $_GET['codigolote'] != "") ? mysqli_real_escape_string($con, (int)$_GET['codigolote']) : false;
-$codigocuota = ($_GET['codigocuota'] !== null && $_GET['codigocuota'] != "") ? mysqli_real_escape_string($con, (int)$_GET['codigocuota']) : false;
-$codigoreunion = ($_GET['codigoreunion'] !== null && $_GET['codigoreunion'] != "") ? mysqli_real_escape_string($con, (int)$_GET['codigoreunion']) : false;
+$codigoreunion = false;
+if (isset($_GET['codigoreunion'])) {
+    $codigoreunion = ($_GET['codigoreunion'] !== null && $_GET['codigoreunion'] != "") ? mysqli_real_escape_string($con, (int)$_GET['codigoreunion']) : false;
+}
+
+$codigolote = false;
+if (isset($_GET['codigolote'])) {
+    $codigolote = ($_GET['codigolote'] !== null && $_GET['codigolote'] != "") ? mysqli_real_escape_string($con, (int)$_GET['codigolote']) : false;
+}
+
+$codigocuota = false;
+if (isset($_GET['codigocuota'])) {
+    $codigocuota = ($_GET['codigocuota'] !== null && $_GET['codigocuota'] != "") ? mysqli_real_escape_string($con, (int)$_GET['codigocuota']) : false;
+}
 
 $response['codigolote'] = $codigolote;
 $response['codigocuota'] = $codigocuota;
@@ -21,6 +32,10 @@ $where = " WHERE 1=1";
 
 if ($codigolote) {
     $where .= " AND codigolote = '${codigolote}' ";
+}
+
+if ($codigocuota) {
+    $where .= " AND codigocuota = '${codigocuota}' ";
 }
 
 if ($codigoreunion) {

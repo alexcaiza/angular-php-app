@@ -7,6 +7,9 @@ require 'depositosfunciones.php';
 
 $postdata = file_get_contents("php://input");
     
+$response = [];
+$response['status'] = 0;
+
 $depositos = [];
 
 $where = "";
@@ -31,38 +34,30 @@ if (isset($params)) {
     if (isset($params->cedula) && $params->cedula) {
         $where .= " AND PER.CEDULA LIKE '%{$params->cedula}%'";
     }
+    
+    if (isset($params->numerodeposito) && $params->numerodeposito) {
+        $where .= " AND DEP.numerodeposito LIKE '%{$params->numerodeposito}%'";
+    }
 }
 
 $sql = sqlDEPOSITOS($where, $orderby);
+
+$response['sql'] = $sql;
 
 //echo "sql: $sql";
 
 $resultset = mysqli_query($con, $sql) or die(mysql_error());
 
-if($resultset)
-{
-  $i = 0;
-  while($row = mysqli_fetch_assoc($resultset))
-  {
+if($resultset) {
+    $response['status'] = 1;
+    $i = 0;
+    while($row = mysqli_fetch_assoc($resultset)) {
       $depositos[$i] = $row;
-	 /* 
-	$depositos[$i]['codigodeposito'] = $row['codigodeposito'];
-    $depositos[$i]['numerodeposito'] = $row['numerodeposito'];
-    $depositos[$i]['codigopersona'] = $row['codigopersona'];
-	$depositos[$i]['fechadeposito'] = $row['fechadeposito'];
-	$depositos[$i]['valordeposito'] = $row['valordeposito'];
-	$depositos[$i]['tipodeposito'] = $row['tipodeposito'];
-	
-	$depositos[$i]['cedula'] = $row['cedula'];
-	$depositos[$i]['primernombre'] = $row['primernombre'];
-	$depositos[$i]['segundonombre'] = $row['segundonombre'];
-	$depositos[$i]['primerapellido'] = $row['primerapellido'];
-	$depositos[$i]['segundoapellido'] = $row['segundoapellido'];
-	*/
-	
-    $i++;   
-  }
-  echo json_encode($depositos);
+      $i++;   
+    }
+    $response['depositos'] = $depositos;
+    
+    echo json_encode($response);
 }
 else {
   http_response_code(404);
